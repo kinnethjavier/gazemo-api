@@ -1,1 +1,1 @@
-showScreenModal();
+startPageVisibility();

@@ -16,20 +16,29 @@ interFont.rel = "stylesheet";
 document.head.appendChild(interFont);
 
 var axiosCDN = document.createElement("script");
-axiosCDN.setAttribute("src", "https://unpkg.com/axios/dist/axios.min.js");
+axiosCDN.setAttribute(
+  "src",
+  "https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"
+);
 document.head.appendChild(axiosCDN);
 
-// const getUsers = () => {
-//   axios
-//     .get("https://reqres.in/api/users")
-//     .then((response) => {
-//       const users = response.data.data;
-//       console.log(`GET users`, users);
-//     })
-//     .catch((error) => console.error(error));
-// };
+const getUsers = () => {
+  axios
+    .get("https://gazemo-api.onrender.com/api/users/")
+    .then((response) => {
+      const users = response;
+      console.log(`GET users`, users);
+    })
+    .catch((error) => console.error(error));
+};
+
+axiosCDN.onload = function () {
+  getUsers();
+};
 
 let isShared = false;
+let deviceNotSupported = false;
+let switchCounter = 0;
 
 const container = document.createElement("div");
 const content = document.createElement("div");
@@ -43,8 +52,15 @@ const btnContainer = document.createElement("div");
 const btnShare = document.createElement("button");
 const btnOk = document.createElement("button");
 
+function startPageVisibility() {
+  if (navigator.mediaDevices && "getDisplayMedia" in navigator.mediaDevices) {
+    checkState();
+  } else {
+    deviceNotSupported = true;
+  }
+}
+
 function showScreenModal() {
-  checkScreenStatus();
   // styling UI
   container.style.position = "absolute";
   container.style.top = "0";
@@ -102,19 +118,10 @@ function showScreenModal() {
   btnShare.style.border = "1px solid #bababa";
   btnShare.style.borderRadius = "8px";
   btnShare.style.textDecoration = "none";
-  btnShare.style.padding = "15px 60px";
-  btnShare.style.cursor = "pointer";
+  btnShare.style.width = "40%";
+  btnShare.style.padding = "15px 0 15px 0";
   btnShare.style.fontWeight = "600";
   btnShare.style.color = "#275907";
-  btnShare.addEventListener("mouseover", function () {
-    btnShare.style.backgroundColor = "#ebebeb";
-  });
-  btnShare.addEventListener("mouseout", function () {
-    btnShare.style.backgroundColor = "#fff";
-  });
-  btnShare.addEventListener("click", function () {
-    shareScreen();
-  });
   btnContainer.appendChild(btnShare);
 
   btnOk.textContent = "I understand";
@@ -123,18 +130,17 @@ function showScreenModal() {
   btnOk.style.border = "1px solid #1C7B30";
   btnOk.style.borderRadius = "8px";
   btnOk.style.textDecoration = "none";
-  btnOk.style.padding = "15px 60px";
+  btnOk.style.width = "40%";
+  btnOk.style.padding = "15px 0 15px 0";
   btnOk.style.fontWeight = "600";
   btnOk.style.color = "#fff";
-  btnOk.addEventListener("click", function () {
-    container.style.display = "none";
-  });
   btnContainer.appendChild(btnOk);
 
   document.body.appendChild(container);
+  disableScroll();
 }
 
-function shareScreen() {
+function startSharing() {
   const options = {
     audio: false,
     video: true,
@@ -145,11 +151,32 @@ function shareScreen() {
     .then(handleSuccess, handleError);
 }
 
-function checkScreenStatus() {
+function stopSharing(stream) {
+  stream.getTracks().forEach((track) => track.stop());
+  isShared = false;
+}
+
+function checkButtonStatus() {
   if (!isShared) {
     btnOk.disabled = true;
     btnOk.style.opacity = "0.8";
     btnOk.style.cursor = "default";
+    btnOk.addEventListener("mouseover", function () {
+      btnOk.style.opacity = "0.8";
+    });
+    btnOk.addEventListener("mouseout", function () {
+      btnOk.style.opacity = "0.8";
+    });
+
+    btnShare.disabled = false;
+    btnShare.style.opacity = "1";
+    btnShare.style.cursor = "pointer";
+    btnShare.addEventListener("mouseover", function () {
+      btnShare.style.backgroundColor = "#ebebeb";
+    });
+    btnShare.addEventListener("mouseout", function () {
+      btnShare.style.backgroundColor = "#fff";
+    });
   } else {
     btnOk.disabled = false;
     btnOk.style.opacity = "1";
@@ -160,24 +187,130 @@ function checkScreenStatus() {
     btnOk.addEventListener("mouseout", function () {
       btnOk.style.opacity = "1";
     });
+
+    btnShare.disabled = true;
+    btnShare.style.opacity = "0.8";
+    btnShare.style.cursor = "default";
+    btnShare.addEventListener("mouseover", function () {
+      btnShare.style.backgroundColor = "#ebebeb";
+    });
+    btnShare.addEventListener("mouseout", function () {
+      btnShare.style.backgroundColor = "#ebebeb";
+    });
   }
 }
 
 function handleSuccess(stream) {
-  video.srcObject = stream;
-  video.autoplay = true;
-  video.height = 280; // in px
-  video.width = 500; // in px
-  previewContainer.appendChild(video);
+  const displaySurface = stream
+    .getVideoTracks()[0]
+    .getSettings().displaySurface;
 
-  isShared = true;
-  checkScreenStatus();
+  if (displaySurface !== "monitor") {
+    stopSharing(stream);
+    checkButtonStatus();
+  } else {
+    video.srcObject = stream;
+    video.autoplay = true;
+    video.style.width = "100%";
+    video.style.height = "auto";
+    previewContainer.appendChild(video);
 
-  stream.getVideoTracks()[0].addEventListener("ended", () => {
-    console.log("The user has ended sharing the screen");
-  });
+    isShared = true;
+    checkState();
+
+    stream.getVideoTracks()[0].addEventListener("ended", () => {
+      isShared = false;
+      checkState();
+    });
+  }
 }
 
 function handleError(error) {
   console.log(`getDisplayMedia error: ${error.name}`, error);
 }
+
+function checkState() {
+  checkButtonStatus();
+
+  if (!isShared) {
+    showScreenModal();
+  }
+}
+
+function takeScreenShot() {
+  canvas.height = 720;
+  canvas.width = 1280;
+  canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+  const screenshotURL = canvas.toDataURL("image/jpeg", 1.0);
+  uploadImage(screenshotURL);
+}
+
+// Random timer screenshot
+function randomizer() {
+  let randomValue = Math.random() * 3 + 0.5;
+  let timer = Math.round(randomValue * 2) / 2;
+
+  if (isShared) {
+    takeScreenShot();
+  }
+  setTimeout(randomizer, timer * 60000);
+}
+
+// Upload image
+function uploadImage(image) {
+  const file = new Blob([image], { type: "image/png" });
+
+  var data = new FormData();
+  data.append("examTakenId", "655d52e104d0d94afabd0b3f");
+  data.append("image", file);
+
+  axios
+    .post("https://gazemo-api.onrender.com/api/upload/screen", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => console.error(error));
+}
+
+// Button event listeners
+btnShare.addEventListener("click", function () {
+  startSharing();
+});
+
+btnOk.addEventListener("click", function () {
+  container.style.display = "none";
+  enableScroll();
+});
+
+// Function for disabling scroll
+function disableScroll() {
+  window.onscroll = function () {
+    window.scrollTo(0, 0);
+  };
+}
+
+// Function for enabling scroll
+function enableScroll() {
+  window.onscroll = function () {};
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (isShared) {
+    if (document.hidden) {
+      switchCounter += 1;
+      setTimeout(() => takeScreenShot(), 300);
+      console.log(switchCounter);
+    }
+  } else if (deviceNotSupported) {
+    if (document.hidden) {
+      switchCounter += 1;
+      console.log(switchCounter);
+    }
+  }
+});
+
+randomizer();
