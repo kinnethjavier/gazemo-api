@@ -22,20 +22,6 @@ axiosCDN.setAttribute(
 );
 document.head.appendChild(axiosCDN);
 
-const getUsers = () => {
-  axios
-    .get("https://gazemo-api.onrender.com/api/users/")
-    .then((response) => {
-      const users = response;
-      console.log(`GET users`, users);
-    })
-    .catch((error) => console.error(error));
-};
-
-axiosCDN.onload = function () {
-  getUsers();
-};
-
 let isShared = false;
 let deviceNotSupported = false;
 let switchCounter = 0;
@@ -52,12 +38,32 @@ const btnContainer = document.createElement("div");
 const btnShare = document.createElement("button");
 const btnOk = document.createElement("button");
 
-function startPageVisibility() {
-  if (navigator.mediaDevices && "getDisplayMedia" in navigator.mediaDevices) {
-    checkState();
-  } else {
-    deviceNotSupported = true;
-  }
+function startPageVisibility(examAccessToken) {
+  axiosCDN.onload = function () {
+    axios
+      .get("https://gazemo-api.onrender.com/api/exams/" + examAccessToken)
+      .then((response) => {
+        const pageVisibility = response.data.items.pageVisibilityStatus;
+
+        if (pageVisibility) {
+          addExamUser(examAccessToken);
+          if (
+            navigator.mediaDevices &&
+            "getDisplayMedia" in navigator.mediaDevices
+          ) {
+            checkState();
+          } else {
+            deviceNotSupported = true;
+          }
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+}
+
+function stopPageVisibility() {
+  stopSharing(video.srcObject);
+  updateTabCounter(getCookie("examinee"));
 }
 
 function showScreenModal() {
@@ -237,6 +243,47 @@ function checkState() {
   }
 }
 
+// Add user when no user was found
+function addExamUser(examAccessToken) {
+  let takenToken = getCookie("examinee");
+  let randomCharacter = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < 5; i++) {
+    randomCharacter += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+
+  if (takenToken == "") {
+    axios
+      .post(
+        "https://gazemo-api.onrender.com/api/examTaken/",
+        {
+          examId: examAccessToken,
+          email: `dummy-${randomCharacter}@gazemail.com`,
+          examinee: `Gazemo Dummy ${randomCharacter}`,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        if (!response.data.error) {
+          const examTakenToken = response.data.item._id;
+          setCookie("examinee", examTakenToken);
+          console.log(getCookie("examinee"));
+        } else {
+          console.log();
+        }
+      })
+      .catch((error) => console.error(error));
+  }
+}
+
 function takeScreenShot() {
   canvas.height = 720;
   canvas.width = 1280;
@@ -261,7 +308,7 @@ function uploadImage(image) {
   const file = new Blob([image], { type: "image/png" });
 
   var data = new FormData();
-  data.append("examTakenId", "655d52e104d0d94afabd0b3f");
+  data.append("examTakenId", getCookie("examinee"));
   data.append("image", file);
 
   axios
@@ -272,6 +319,26 @@ function uploadImage(image) {
     })
     .then((response) => {
       console.log(response);
+    })
+    .catch((error) => console.error(error));
+}
+
+// Update switch tab counter
+function updateTabCounter(takenId) {
+  axios
+    .post(
+      "https://gazemo-api.onrender.com/api/examTaken/update/" + takenId,
+      { switchTabCounter: switchCounter },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      if (!response.data.error) {
+        removeCookie("examinee");
+      }
     })
     .catch((error) => console.error(error));
 }
@@ -298,17 +365,45 @@ function enableScroll() {
   window.onscroll = function () {};
 }
 
+// Cookies
+function setCookie(name, value) {
+  const date = new Date();
+  date.setHours(date.getHours() + 2);
+  let expires = "expires=" + date.toUTCString();
+  document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function getCookie(cookieName) {
+  let name = cookieName + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(";");
+
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function removeCookie(cookieName) {
+  document.cookie =
+    cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
 document.addEventListener("visibilitychange", () => {
   if (isShared) {
     if (document.hidden) {
       switchCounter += 1;
       setTimeout(() => takeScreenShot(), 300);
-      console.log(switchCounter);
     }
   } else if (deviceNotSupported) {
     if (document.hidden) {
       switchCounter += 1;
-      console.log(switchCounter);
     }
   }
 });
