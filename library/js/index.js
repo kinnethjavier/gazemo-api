@@ -33,8 +33,10 @@ function startGazemo(examAccessToken) {
 function stopGazemo() {
   if (gazeTracking && pageVisibility) {
     stopPageVisibility();
+    stopGazeTracking();
     removeCookie("examinee");
   } else if (gazeTracking) {
+    stopGazeTracking();
     removeCookie("examinee");
   } else if (pageVisibility) {
     stopPageVisibility();

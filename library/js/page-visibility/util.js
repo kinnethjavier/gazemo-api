@@ -15,13 +15,6 @@ interFont.href =
 interFont.rel = "stylesheet";
 document.head.appendChild(interFont);
 
-var axiosCDN = document.createElement("script");
-axiosCDN.setAttribute(
-  "src",
-  "https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"
-);
-document.head.appendChild(axiosCDN);
-
 let isShared = false;
 let deviceNotSupported = false;
 let switchCounter = 0;
