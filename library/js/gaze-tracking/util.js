@@ -56,7 +56,6 @@ function showScreenModal1() {
   container1.style.fontFamily = "Inter,sans-serif";
 
   content1.style.height = "auto";
-  content1.style.width = "50%";
   content1.style.backgroundColor = "#fff";
   content1.style.borderRadius = "8px";
   content1.style.padding = "18px 15px";
@@ -81,8 +80,6 @@ function showScreenModal1() {
   textPreview1.style.color = "rgb(55 65 81)";
   content1.appendChild(textPreview1);
 
-  previewContainer1.style.height = "260px";
-  previewContainer1.style.width = "70%";
   previewContainer1.style.backgroundColor = "#fff";
   previewContainer1.style.marginLeft = "auto";
   previewContainer1.style.marginRight = "auto";
@@ -90,9 +87,6 @@ function showScreenModal1() {
   previewContainer1.style.justifyContent = "center";
   previewContainer1.style.marginBottom = "20px";
   content1.appendChild(previewContainer1);
-
-  btnContainer1.style.display = "flex";
-  btnContainer1.style.justifyContent = "space-between";
   content1.appendChild(btnContainer1);
 
   btnRefresh.textContent = "Refresh";
@@ -101,7 +95,6 @@ function showScreenModal1() {
   btnRefresh.style.border = "1px solid #bababa";
   btnRefresh.style.borderRadius = "8px";
   btnRefresh.style.textDecoration = "none";
-  btnRefresh.style.width = "40%";
   btnRefresh.style.padding = "15px 0 15px 0";
   btnRefresh.style.fontWeight = "600";
   btnRefresh.style.color = "#275907";
@@ -120,17 +113,47 @@ function showScreenModal1() {
   btnOk1.style.border = "1px solid #1C7B30";
   btnOk1.style.borderRadius = "8px";
   btnOk1.style.textDecoration = "none";
-  btnOk1.style.width = "40%";
   btnOk1.style.padding = "15px 0 15px 0";
   btnOk1.style.fontWeight = "600";
   btnOk1.style.color = "#fff";
   btnContainer1.appendChild(btnOk1);
 
-  video1.style.width = "70%";
-  video1.style.height = "auto";
-
+  mediaQuery();
   document.body.appendChild(container1);
   disableScroll();
+}
+
+// Media query
+function mediaQuery() {
+  if (window.innerWidth < 768) {
+    // mobile
+    content1.style.width = "85%";
+
+    previewContainer1.style.height = "230px";
+    previewContainer1.style.width = "100%";
+
+    video1.style.width = "85%";
+    video1.style.height = "auto";
+
+    btnRefresh.style.width = "100%";
+    btnOk1.style.width = "100%";
+    btnOk1.style.marginTop = "16px";
+  } else {
+    // bigger screen
+    content1.style.width = "50%";
+
+    previewContainer1.style.height = "260px";
+    previewContainer1.style.width = "70%";
+
+    video1.style.width = "70%";
+    video1.style.height = "auto";
+
+    btnContainer1.style.display = "flex";
+    btnContainer1.style.justifyContent = "space-between";
+
+    btnRefresh.style.width = "40%";
+    btnOk1.style.width = "40%";
+  }
 }
 
 function checkButtonStatus1() {
