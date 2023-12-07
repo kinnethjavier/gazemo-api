@@ -1,6 +1,7 @@
 let gazeTracking = false;
 let pageVisibility = false;
 
+// Start gazemo API
 function startGazemo(examAccessToken) {
   axios
     .get("https://gazemo-api.onrender.com/api/exams/" + examAccessToken)
@@ -30,6 +31,7 @@ function startGazemo(examAccessToken) {
     .catch((error) => console.error(error));
 }
 
+// Stop gazemo API
 function stopGazemo() {
   if (gazeTracking && pageVisibility) {
     stopPageVisibility();
