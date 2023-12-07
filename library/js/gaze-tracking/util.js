@@ -32,14 +32,17 @@ const btnContainer1 = document.createElement("div");
 const btnRefresh = document.createElement("button");
 const btnOk1 = document.createElement("button");
 
+// Start gaze tracking
 function startGazeTracking() {
   checkState1();
 }
 
+// Stop gaze tracking
 function stopGazeTracking() {
   stopSharing(video1.srcObject);
 }
 
+// Display modal function
 function showScreenModal1() {
   // styling UI
   container1.style.position = "absolute";
@@ -156,6 +159,7 @@ function mediaQuery() {
   }
 }
 
+// Check if buttons in modal is enabled or disabled
 function checkButtonStatus1() {
   if (!isFaceVisible) {
     btnOk1.disabled = true;
@@ -180,6 +184,7 @@ function checkButtonStatus1() {
   }
 }
 
+// Check gaze tracking state
 function checkState1() {
   checkButtonStatus1();
 
@@ -203,6 +208,7 @@ function checkState1() {
   }
 }
 
+// Setting up camera
 function setupCamera() {
   return new Promise(function (resolve, reject) {
     navigator.mediaDevices
@@ -227,6 +233,7 @@ function setupCamera() {
   });
 }
 
+// Loading face models for gaze tracking
 function loadFaceLandmarkDetectionModel() {
   return faceLandmarksDetection.load(
     faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
@@ -234,6 +241,7 @@ function loadFaceLandmarkDetectionModel() {
   );
 }
 
+// Predict
 function renderPrediction() {
   model
     .estimateFaces({ input: video1 })
@@ -247,6 +255,7 @@ function renderPrediction() {
     });
 }
 
+// Get iris position
 function displayIrisPosition(predictions) {
   if (predictions.length > 0) {
     predictions.forEach((prediction) => {
@@ -270,6 +279,7 @@ function displayIrisPosition(predictions) {
   }
 }
 
+// Estimate gaze
 function estimateGazeDirection(irisCenter, rightPoint, leftPoint) {
   const centerToRightDist = euclideanDistance(irisCenter, rightPoint);
   const totalDistance = euclideanDistance(rightPoint, leftPoint);
@@ -296,6 +306,7 @@ function euclideanDistance(point1, point2) {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
+// Check gaze direction
 function checkGazeDirection(gazeDirection) {
   const currentTime = new Date().getTime();
 
@@ -316,6 +327,7 @@ function checkGazeDirection(gazeDirection) {
   }
 }
 
+// Capture face image function
 function captureFace() {
   canvas1.height = videoHeight;
   canvas1.width = videoWidth;

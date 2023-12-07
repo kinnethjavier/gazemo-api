@@ -34,12 +34,15 @@ function stopGazemo() {
   if (gazeTracking && pageVisibility) {
     stopPageVisibility();
     stopGazeTracking();
+    updateExamStatus();
     removeCookie("examinee");
   } else if (gazeTracking) {
     stopGazeTracking();
+    updateExamStatus();
     removeCookie("examinee");
   } else if (pageVisibility) {
     stopPageVisibility();
+    updateExamStatus();
     removeCookie("examinee");
   }
 }
@@ -83,6 +86,27 @@ function addExamUser(examAccessToken) {
       })
       .catch((error) => console.error(error));
   }
+}
+
+// Update exam token status
+function updateExamStatus() {
+  const takenId = getCookie("examinee");
+  axios
+    .post(
+      "https://gazemo-api.onrender.com/api/examTaken/update/" + takenId,
+      { finishedAt: Date.now() },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      if (!response.data.error) {
+        console.log("Exam taken token status updated.");
+      }
+    })
+    .catch((error) => console.error(error));
 }
 
 // Cookies
