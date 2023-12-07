@@ -361,4 +361,5 @@ btnRefresh.addEventListener("click", function () {
 
 btnOk1.addEventListener("click", function () {
   container1.style.display = "none";
+  enableScroll();
 });
