@@ -31,6 +31,7 @@ const btnContainer = document.createElement("div");
 const btnShare = document.createElement("button");
 const btnOk = document.createElement("button");
 
+// Start page visibility
 function startPageVisibility() {
   if (navigator.mediaDevices && "getDisplayMedia" in navigator.mediaDevices) {
     checkState();
@@ -39,11 +40,13 @@ function startPageVisibility() {
   }
 }
 
+// Stop page visibility
 function stopPageVisibility() {
   stopSharing(video.srcObject);
   updateTabCounter(getCookie("examinee"));
 }
 
+// Display modal function
 function showScreenModal() {
   // styling UI
   container.style.position = "absolute";
@@ -124,6 +127,7 @@ function showScreenModal() {
   disableScroll();
 }
 
+// Start sharing screen function
 function startSharing() {
   const options = {
     audio: false,
@@ -135,11 +139,13 @@ function startSharing() {
     .then(handleSuccess, handleError);
 }
 
+// Stop sharing screen function
 function stopSharing(stream) {
   stream.getTracks().forEach((track) => track.stop());
   isShared = false;
 }
 
+// Check if buttons in modal is enabled or disabled
 function checkButtonStatus() {
   if (!isShared) {
     btnOk.disabled = true;
@@ -184,6 +190,7 @@ function checkButtonStatus() {
   }
 }
 
+// Handler to check if screen is successfully shared
 function handleSuccess(stream) {
   const displaySurface = stream
     .getVideoTracks()[0]
@@ -209,10 +216,12 @@ function handleSuccess(stream) {
   }
 }
 
+// Handler to check if screen failed to share
 function handleError(error) {
   console.log(`getDisplayMedia error: ${error.name}`, error);
 }
 
+// Check page visibility state
 function checkState() {
   checkButtonStatus();
 
@@ -221,6 +230,7 @@ function checkState() {
   }
 }
 
+// Function for capturing screen image
 function takeScreenShot() {
   canvas.height = 720;
   canvas.width = 1280;
@@ -303,4 +313,4 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-randomizer();
+randomizer(); // for random screen shot
