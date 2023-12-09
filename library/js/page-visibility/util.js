@@ -42,7 +42,10 @@ function startPageVisibility() {
 
 // Stop page visibility
 function stopPageVisibility() {
-  stopSharing(video.srcObject);
+  if (!deviceNotSupported) {
+    stopSharing(video.srcObject);
+  }
+
   updateTabCounter(getCookie("examinee"));
 }
 
