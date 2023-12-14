@@ -1,4 +1,4 @@
-startGazemo("6540a8eeb3365f681d4d9276");
+startGazemo("6576b32cf6ccc89917179165");
 
 const stopBtn = document.getElementById("stop");
 stopBtn.addEventListener("click", function () {
