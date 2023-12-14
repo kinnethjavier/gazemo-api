@@ -28,6 +28,7 @@ const video1 = document.createElement("video");
 const canvas1 = document.createElement("canvas");
 const previewContainer1 = document.createElement("div");
 const textPreview1 = document.createElement("p");
+const note1 = document.createElement("p");
 const btnContainer1 = document.createElement("div");
 const btnRefresh = document.createElement("button");
 const btnOk1 = document.createElement("button");
@@ -90,6 +91,12 @@ function showScreenModal1() {
   previewContainer1.style.justifyContent = "center";
   previewContainer1.style.marginBottom = "20px";
   content1.appendChild(previewContainer1);
+
+  note1.innerHTML =
+    "<b>Note:</b> If the preview doesn't work, please click the <b>refresh</b> button below.";
+  note1.style.fontSize = "14px";
+  note1.style.color = "rgb(55 65 81)";
+  content1.appendChild(note1);
   content1.appendChild(btnContainer1);
 
   btnRefresh.textContent = "Refresh";

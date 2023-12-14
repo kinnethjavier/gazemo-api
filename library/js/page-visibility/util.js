@@ -27,6 +27,7 @@ const video = document.createElement("video");
 const canvas = document.createElement("canvas");
 const previewContainer = document.createElement("div");
 const textPreview = document.createElement("p");
+const note = document.createElement("p");
 const btnContainer = document.createElement("div");
 const btnShare = document.createElement("button");
 const btnOk = document.createElement("button");
@@ -97,6 +98,12 @@ function showScreenModal() {
   previewContainer.style.marginLeft = "auto";
   previewContainer.style.marginRight = "auto";
   content.appendChild(previewContainer);
+
+  note.innerHTML =
+    "<b>Note:</b> To share your screen, please click the <b>share screen</b> button below.";
+  note.style.fontSize = "14px";
+  note.style.color = "rgb(55 65 81)";
+  content.appendChild(note);
 
   btnContainer.style.display = "flex";
   btnContainer.style.justifyContent = "space-between";
