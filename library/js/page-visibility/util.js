@@ -103,6 +103,7 @@ function showScreenModal() {
     "<b>Note:</b> To share your screen, please click the <b>share screen</b> button below.";
   note.style.fontSize = "14px";
   note.style.color = "rgb(55 65 81)";
+  note.style.marginBottom = "18px";
   content.appendChild(note);
 
   btnContainer.style.display = "flex";
