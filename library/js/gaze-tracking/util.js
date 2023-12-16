@@ -96,6 +96,7 @@ function showScreenModal1() {
     "<b>Note:</b> If the preview doesn't work, please click the <b>refresh</b> button below.";
   note1.style.fontSize = "14px";
   note1.style.color = "rgb(55 65 81)";
+  note1.style.marginBottom = "18px";
   content1.appendChild(note1);
   content1.appendChild(btnContainer1);
 
