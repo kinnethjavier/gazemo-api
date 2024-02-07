@@ -65,6 +65,7 @@ function showScreenModal() {
   container.style.justifyContent = "center";
   container.style.alignItems = "center";
   container.style.fontFamily = "Inter,sans-serif";
+  container.style.zIndex = "1001";
 
   content.style.height = "auto";
   content.style.width = "50%";
