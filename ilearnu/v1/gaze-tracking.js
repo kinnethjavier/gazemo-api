@@ -46,7 +46,7 @@ function stopGazeTracking() {
 // Display modal function
 function showScreenModal1() {
   // styling UI
-  container1.style.position = "absolute";
+  container1.style.position = "fixed";
   container1.style.top = "0";
   container1.style.left = "0";
   container1.style.right = "0";
@@ -347,14 +347,28 @@ function captureFace() {
 
 // Upload image
 function uploadFace(image) {
-  const file = new Blob([image], { type: "image/png" });
+  var googleKeyCon = document.getElementById("g_key");
+  var privateKey = googleKeyCon.getAttribute("data-key");
 
   var data = new FormData();
   data.append("luDataId", getCookie("examinee"));
-  data.append("image", file);
+  data.append("image", image);
+  data.append("type", getCookie("g_type"));
+  data.append("project_id", getCookie("g_project_id"));
+  data.append("private_key_id", getCookie("g_private_key_id"));
+  data.append("private_key", privateKey);
+  data.append("client_email", getCookie("g_client_email"));
+  data.append("client_id", getCookie("g_client_id"));
+  data.append("auth_uri", getCookie("g_auth_uri"));
+  data.append("token_uri", getCookie("g_token_uri"));
+  data.append("auth_provider_x509_cert_url", getCookie("g_auth_provider"));
+  data.append("client_x509_cert_url", getCookie("g_client_cert"));
+  data.append("universe_domain", getCookie("g_universe_domain"));
+  data.append("face_path_folder_id", getCookie("g_face_path"));
+  data.append("screen_path_folder_id", getCookie("g_screen_path"));
 
   axios
-    .post("https://gazemo-api.onrender.com/api/upload/ilearnu/face", data, {
+    .post("https://gazemo-api.onrender.com/api/google/upload/face", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
