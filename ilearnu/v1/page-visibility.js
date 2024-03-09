@@ -17,7 +17,6 @@ document.head.appendChild(interFont);
 
 let isShared = false;
 let deviceNotSupported = false;
-let switchCounter = 0;
 
 const container = document.createElement("div");
 const content = document.createElement("div");
@@ -46,8 +45,6 @@ function stopPageVisibility() {
   if (!deviceNotSupported) {
     stopSharing(video.srcObject);
   }
-
-  updateTabCounter(getCookie("examinee"));
 }
 
 // Display modal function
@@ -68,7 +65,6 @@ function showScreenModal() {
   container.style.zIndex = "1001";
 
   content.style.height = "auto";
-  content.style.width = "50%";
   content.style.backgroundColor = "#fff";
   content.style.borderRadius = "8px";
   content.style.padding = "18px 15px";
@@ -93,8 +89,6 @@ function showScreenModal() {
   textPreview.style.color = "rgb(55 65 81)";
   content.appendChild(textPreview);
 
-  previewContainer.style.height = "300px";
-  previewContainer.style.width = "70%";
   previewContainer.style.backgroundColor = "#fff";
   previewContainer.style.marginLeft = "auto";
   previewContainer.style.marginRight = "auto";
@@ -106,9 +100,6 @@ function showScreenModal() {
   note.style.color = "rgb(55 65 81)";
   note.style.marginBottom = "18px";
   content.appendChild(note);
-
-  btnContainer.style.display = "flex";
-  btnContainer.style.justifyContent = "space-between";
   content.appendChild(btnContainer);
 
   btnShare.textContent = "Share screen";
@@ -117,9 +108,7 @@ function showScreenModal() {
   btnShare.style.border = "1px solid #bababa";
   btnShare.style.borderRadius = "8px";
   btnShare.style.textDecoration = "none";
-  btnShare.style.width = "40%";
   btnShare.style.padding = "15px 0 15px 0";
-  btnShare.style.fontWeight = "600";
   btnShare.style.color = "#275907";
   btnContainer.appendChild(btnShare);
 
@@ -129,14 +118,47 @@ function showScreenModal() {
   btnOk.style.border = "1px solid #1C7B30";
   btnOk.style.borderRadius = "8px";
   btnOk.style.textDecoration = "none";
-  btnOk.style.width = "40%";
   btnOk.style.padding = "15px 0 15px 0";
   btnOk.style.fontWeight = "600";
   btnOk.style.color = "#fff";
   btnContainer.appendChild(btnOk);
 
+  mediaQuery1();
   document.body.appendChild(container);
   disableScroll();
+}
+
+// Media query
+function mediaQuery1() {
+  if (window.innerWidth < 768) {
+    // mobile
+    content.style.width = "85%";
+
+    previewContainer.style.height = "230px";
+    previewContainer.style.width = "100%";
+
+    video.style.width = "85%";
+    video.style.height = "auto";
+
+    btnShare.style.width = "100%";
+    btnOk.style.width = "100%";
+    btnOk.style.marginTop = "16px";
+  } else {
+    // bigger screen
+    content.style.width = "50%";
+
+    previewContainer.style.height = "260px";
+    previewContainer.style.width = "70%";
+
+    video.style.width = "70%";
+    video.style.height = "auto";
+
+    btnContainer.style.display = "flex";
+    btnContainer.style.justifyContent = "space-between";
+
+    btnShare.style.width = "40%";
+    btnOk.style.width = "40%";
+  }
 }
 
 // Start sharing screen function
@@ -161,13 +183,13 @@ function stopSharing(stream) {
 function checkButtonStatus() {
   if (!isShared) {
     btnOk.disabled = true;
-    btnOk.style.opacity = "0.8";
+    btnOk.style.opacity = "0.3";
     btnOk.style.cursor = "default";
     btnOk.addEventListener("mouseover", function () {
-      btnOk.style.opacity = "0.8";
+      btnOk.style.opacity = "0.3";
     });
     btnOk.addEventListener("mouseout", function () {
-      btnOk.style.opacity = "0.8";
+      btnOk.style.opacity = "0.3";
     });
 
     btnShare.disabled = false;
@@ -191,7 +213,7 @@ function checkButtonStatus() {
     });
 
     btnShare.disabled = true;
-    btnShare.style.opacity = "0.8";
+    btnShare.style.opacity = "0.3";
     btnShare.style.cursor = "default";
     btnShare.addEventListener("mouseover", function () {
       btnShare.style.backgroundColor = "#ebebeb";
@@ -290,7 +312,7 @@ function uploadImage(image) {
         "Content-Type": "multipart/form-data",
       },
     })
-    .then((response) => {console.log(response)})
+    .then((response) => {})
     .catch((error) => console.error(error));
 }
 
@@ -298,8 +320,7 @@ function uploadImage(image) {
 function updateTabCounter(takenId) {
   axios
     .post(
-      "https://gazemo-api.onrender.com/api/luData/update/" + takenId,
-      { switchTabCounter: switchCounter },
+      "https://gazemo-api.onrender.com/api/luData/updateSwitchTab/" + takenId,
       {
         headers: {
           "Content-Type": "application/json",
@@ -323,12 +344,12 @@ btnOk.addEventListener("click", function () {
 document.addEventListener("visibilitychange", () => {
   if (isShared) {
     if (document.hidden) {
-      switchCounter += 1;
       setTimeout(() => takeScreenShot(), 300);
+      updateTabCounter(getCookie("examinee"));
     }
   } else if (deviceNotSupported) {
     if (document.hidden) {
-      switchCounter += 1;
+      updateTabCounter(getCookie("examinee"));
     }
   }
 });
