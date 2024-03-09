@@ -171,13 +171,13 @@ function mediaQuery() {
 function checkButtonStatus1() {
   if (!isFaceVisible) {
     btnOk1.disabled = true;
-    btnOk1.style.opacity = "0.8";
+    btnOk1.style.opacity = "0.3";
     btnOk1.style.cursor = "default";
     btnOk1.addEventListener("mouseover", function () {
-      btnOk1.style.opacity = "0.8";
+      btnOk1.style.opacity = "0.3";
     });
     btnOk1.addEventListener("mouseout", function () {
-      btnOk1.style.opacity = "0.8";
+      btnOk1.style.opacity = "0.3";
     });
   } else {
     btnOk1.disabled = false;
