@@ -46,7 +46,7 @@ function stopGazeTracking() {
 // Display modal function
 function showScreenModal1() {
   // styling UI
-  container1.style.position = "absolute";
+  container1.style.position = "fixed";
   container1.style.top = "0";
   container1.style.left = "0";
   container1.style.right = "0";
@@ -254,6 +254,17 @@ function renderPrediction() {
   model
     .estimateFaces({ input: video1 })
     .then((predictions) => {
+      // check if face or iris is not detected
+      if (predictions.length === 0) {
+        isFaceVisible = false;
+        showScreenModal1();
+        checkButtonStatus1();
+      }  
+      else {
+        isFaceVisible = true;
+        checkButtonStatus1();
+      }
+
       displayIrisPosition(predictions);
 
       window.requestAnimationFrame(renderPrediction);

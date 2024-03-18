@@ -298,9 +298,7 @@ function uploadImage(image) {
         "Content-Type": "multipart/form-data",
       },
     })
-    .then((response) => {
-      console.log(response);
-    })
+    .then((response) => {})
     .catch((error) => console.error(error));
 }
 
@@ -315,11 +313,7 @@ function updateTabCounter(takenId) {
         },
       }
     )
-    .then((response) => {
-      if (!response.data.error) {
-        console.log("Switch tab counter updated");
-      }
-    })
+    .then((response) => {})
     .catch((error) => console.error(error));
 }
 
