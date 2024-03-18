@@ -255,6 +255,17 @@ function renderPrediction() {
   model
     .estimateFaces({ input: video1 })
     .then((predictions) => {
+       // check if face or iris is not detected
+       if (predictions.length === 0) {
+        isFaceVisible = false;
+        showScreenModal1();
+        checkButtonStatus1();
+      }  
+      else {
+        isFaceVisible = true;
+        checkButtonStatus1();
+      }
+
       displayIrisPosition(predictions);
 
       window.requestAnimationFrame(renderPrediction);
