@@ -10,20 +10,22 @@ function startGazemo(luConfigToken, examineeId, googleDriveKey) {
       pageVisibility = response.data.items.pageVisibilityStatus;
 
       saveGoogleDriveKey(googleDriveKey)
-      addExamUser(luConfigToken, examineeId);
 
       if (gazeTracking && pageVisibility) {
+        addExamUser(luConfigToken, examineeId);
         startGazeTracking();
         btnOk1.addEventListener("click", function () {
           container1.style.display = "none";
           startPageVisibility();
         });
       } else if (gazeTracking) {
+        addExamUser(luConfigToken, examineeId);
         startGazeTracking();
         btnOk1.addEventListener("click", function () {
           container1.style.display = "none";
         });
       } else if (pageVisibility) {
+        addExamUser(luConfigToken, examineeId);
         startPageVisibility();
       } else {
         console.log("Gazemo features is not enabled");

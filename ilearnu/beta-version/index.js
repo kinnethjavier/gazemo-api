@@ -9,20 +9,21 @@ function startGazemo(luConfigToken, examineeId) {
       gazeTracking = response.data.items.gazeStatus;
       pageVisibility = response.data.items.pageVisibilityStatus;
 
-      addExamUser(luConfigToken, examineeId);
-
       if (gazeTracking && pageVisibility) {
+        addExamUser(luConfigToken, examineeId);
         startGazeTracking();
         btnOk1.addEventListener("click", function () {
           container1.style.display = "none";
           startPageVisibility();
         });
       } else if (gazeTracking) {
+        addExamUser(luConfigToken, examineeId);
         startGazeTracking();
         btnOk1.addEventListener("click", function () {
           container1.style.display = "none";
         });
       } else if (pageVisibility) {
+        addExamUser(luConfigToken, examineeId);
         startPageVisibility();
       } else {
         console.log("Gazemo features is not enabled");

@@ -9,20 +9,21 @@ function startGazemo(examAccessToken) {
       gazeTracking = response.data.items.gazeStatus;
       pageVisibility = response.data.items.pageVisibilityStatus;
 
-      addExamUser(examAccessToken);
-
       if (gazeTracking && pageVisibility) {
+        addExamUser(examAccessToken);
         startGazeTracking();
         btnOk1.addEventListener("click", function () {
           container1.style.display = "none";
           startPageVisibility();
         });
       } else if (gazeTracking) {
+        addExamUser(examAccessToken);
         startGazeTracking();
         btnOk1.addEventListener("click", function () {
           container1.style.display = "none";
         });
       } else if (pageVisibility) {
+        addExamUser(examAccessToken);
         startPageVisibility();
       } else {
         console.log("Gazemo features is not enabled");
